@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JARVIS</title>
+
+  <style>
+    body {
+      background: #080b12;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    h1 {
+      font-size: 45px;
+      letter-spacing: 8px;
+    }
+
+    button {
+      font-size: 20px;
+      padding: 18px 30px;
+      border-radius: 30px;
+      border: none;
+      margin-top: 30px;
+    }
+
+    #resultado {
+      margin-top: 30px;
+      font-size: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>JARVIS</h1>
+
+  <p>Asistente personal</p>
+
+  <button onclick="escuchar()">🎤 Hablar con JARVIS</button>
+
+  <div id="resultado">
+    Pulsa el botón y habla.
+  </div>
+
+  <script>
+    const reconocimiento =
+      new (window.SpeechRecognition ||
+           window.webkitSpeechRecognition)();
+
+    reconocimiento.lang = "es-MX";
+    reconocimiento.continuous = false;
+
+    reconocimiento.onstart = function () {
+      document.getElementById("resultado").innerText =
+        "🎤 Escuchando...";
+    };
+
+    reconocimiento.onresult = function (evento) {
+
+      const texto =
+        evento.results[0][0].transcript.toLowerCase();
+
+      document.getElementById("resultado").innerText =
+        "Tú: " + texto;
+
+      responder(texto);
+    };
+
+    reconocimiento.onerror = function () {
+      document.getElementById("resultado").innerText =
+        "No pude escuchar correctamente.";
+    };
+
+    function escuchar() {
+      reconocimiento.start();
+    }
+
+    function responder(texto) {
+
+      let respuesta = "";
+
+      if (texto.includes("hola")) {
+        respuesta = "Hola. ¿En qué puedo ayudarte?";
+      }
+
+      else if (texto.includes("tu nombre")) {
+        respuesta = "Soy JARVIS, tu asistente personal.";
+      }
+
+      else if (texto.includes("cómo estás")) {
+        respuesta = "Todos mis sistemas funcionan correctamente.";
+      }
+
+      else {
+        respuesta = "Todavía no sé cómo responder a eso.";
+      }
+
+      document.getElementById("resultado").innerText =
+        "JARVIS: " + respuesta;
+
+      hablar(respuesta);
+    }
+
+    function hablar(texto) {
+
+    speechSynthesis.cancel();
+
+    const voz = new SpeechSynthesisUtterance(texto);
+
+    voz.lang = "es-MX";
+    voz.rate = 0.9;
+    voz.pitch = 1;
+
+    const voces = speechSynthesis.getVoices();
+
+    const vozEspañol = voces.find(v =>
+        v.lang.toLowerCase().startsWith("es")
+    );
+
+    if (vozEspañol) {
+        voz.voice = vozEspañol;
+    }
+
+    speechSynthesis.speak(voz);
+}
+  </script>
+
+</body>
+</html>
