@@ -107,13 +107,26 @@
 
     function hablar(texto) {
 
-      const voz = new SpeechSynthesisUtterance(texto);
+    speechSynthesis.cancel();
 
-      voz.lang = "es-MX";
-      voz.rate = 0.9;
+    const voz = new SpeechSynthesisUtterance(texto);
 
-      speechSynthesis.speak(voz);
+    voz.lang = "es-MX";
+    voz.rate = 0.9;
+    voz.pitch = 1;
+
+    const voces = speechSynthesis.getVoices();
+
+    const vozEspañol = voces.find(v =>
+        v.lang.toLowerCase().startsWith("es")
+    );
+
+    if (vozEspañol) {
+        voz.voice = vozEspañol;
     }
+
+    speechSynthesis.speak(voz);
+}
   </script>
 
 </body>
